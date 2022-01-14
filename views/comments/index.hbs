@@ -1,10 +1,5 @@
 {{#each comments}}
-  <h3>{{title}}</h3>
-  <p>
-    <small>{{date}}</small>
-    <br />
-    <strong>{{body}}</strong>
-  </p>
+{{> comment comment =.}}
 {{/each}}
 
 <form method="post" action="/comments">

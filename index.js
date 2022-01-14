@@ -2,6 +2,8 @@ import express from "express";
 import hbs from "hbs";
 import path from "path";
 import mongoose from "mongoose";
+import methodOverride from "method-override";
+import { Comment } from "./model/comment.js";
 
 const __dirname = path.resolve();
 const app = express();
@@ -17,27 +19,65 @@ const users = [
 ];
 
 app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride("_method"));
+
 await mongoose.connect("mongodb://localhost/mcs");
 
-const Schema = mongoose.Schema;
-const CommentSchema = new Schema({
-  title: String,
-  body: String,
-  date: Date,
-});
-const Comment = mongoose.model("Comment", CommentSchema);
+
 
 app.get("/", (req, res) => {
   res.render("index", { main_title: "Node Express server" });
 });
 
 app.get("/comments", (req, res) => {
-    Comment.find().then((comments) => {
-        res.render("comments/index", { main_title: "Comments", comments: comments });
-    }).catch(err => {
-        es.status(400).json({ e: err });
+  Comment.find()
+    .then((comments) => {
+      res.render("comments/index", {
+        main_title: "Comments",
+        comments: comments,
+      });
     })
-  
+    .catch((err) => {
+      es.status(400).json({ e: err });
+    });
+});
+
+app.get("/comment/:commentId", (req, res) => {
+  Comment.findOne({ _id: req.params.commentId })
+    .then((comment) => {
+      res.render("comments/show", {
+        main_title: comment.title,
+        comment: comment,
+      });
+    })
+    .catch((err) => {
+      es.status(400).json({ e: err });
+    });
+});
+
+app.put("/comment/:commentId", (req, res) => {
+  const comment = new Comment({
+    _id: req.params.commentId,
+    title: req.body["comment_title"],
+    body: req.body["comment_body"],
+  });
+  Comment.updateOne({ _id: req.params.commentId }, comment)
+    .then((comment) => {
+      res.redirect("/comments");
+    })
+    .catch((err) => {
+      es.status(400).json({ e: err });
+    });
+});
+
+app.delete("/comments/:commentId", (req, res) => {
+  Comment.deleteOne({ _id: req.params.commentId })
+    .then(() => {
+      res.redirect("/comments");
+    })
+    .catch((err) => {
+      es.status(400).json({ e: err });
+    });
 });
 
 app.post("/comments", (req, res) => {
