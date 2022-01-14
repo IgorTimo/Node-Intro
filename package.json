@@ -2,16 +2,17 @@
   "name": "basic",
   "version": "1.0.0",
   "description": "basic project for node",
-  "main": "src/index.js",
+  "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "nodemon src/index.js",
+    "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "IgotTimo",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.17.2"
+    "express": "^4.17.2",
+    "hbs": "^4.2.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.15"
