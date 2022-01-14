@@ -1,10 +1,10 @@
 import express from 'express';
+import { respond } from './responder.js';
 
 const app = express();
 
 app.get('/', (req, res) => {
-    //http://localhost:3000/
-    res.send("Hello from server");
+    respond(res);
 })
 
 app.listen(3000, ()=>{
