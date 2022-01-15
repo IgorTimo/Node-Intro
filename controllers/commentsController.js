@@ -17,7 +17,7 @@ export class CommentsController {
   }
 
 
-  static showOneComment(req, res){
+  static showComment(req, res){
     Comment.findOne({ _id: req.params.commentId })
     .then((comment) => {
       res.render("comments/show", {

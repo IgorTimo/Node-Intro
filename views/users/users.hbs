@@ -1,0 +1,10 @@
+<ul>
+  {{#each users}}
+    <li><a href="users">{{username}}</a> Email: {{email}} Password: {{password}}</li>
+  {{/each}}
+
+</ul>
+
+<form method="get" action="users/new">
+  <input type="Submit" value="Sing up" />
+</form>
