@@ -12,7 +12,7 @@ function auth(req, res, next, mandatory = true) {
   if (req.session.user && req.session.user._id) {
     User.findOne({ _id: req.session.user._id })
       .then((user) => {
-        console.log("User in session = " + JSON.stringify(user));
+        // console.log("User in session = " + JSON.stringify(user));
         res.locals.currentUser = user;
         next();
       })
@@ -23,7 +23,7 @@ function auth(req, res, next, mandatory = true) {
     if (mandatory) {
       res.redirect("/sessions/new");
     }
-    console.log("Nobody in this session.")
+    // console.log("Nobody in this session.")
     next();
   }
 }

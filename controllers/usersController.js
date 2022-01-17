@@ -1,19 +1,27 @@
 import bcrypt from "bcrypt";
 import { User } from "../model/user.js";
+import { ApplicationController } from "./applicationController.js";
 
-export class UsersController {
-  static showAllUsers(res) {
+
+export class UsersController extends ApplicationController {
+  static showAllUsers(req, res) {
     User.find()
     .then((users) =>
-      res.render("users/users", { main_title: "Users", users: users })
+    this.renderView(req, res, "users/users", { main_title: "Users", users: users })
     )
     .catch((err) => {
         res.status(400).json({ e: err });
       });
   }
 
-  static showUser(res) {
-    res.render("users/user", { main_title: user.name, user: {} });
+  static showUser(req, res) {
+
+    User.findOne({_id: req.params.userId}).then((user) =>{
+      this.renderView(req, res, "users/user", { main_title: user.username, name: user.username, email: user.email, password: user.password});
+    })
+
+    
+
   }
 
   static addNewUser(res) {

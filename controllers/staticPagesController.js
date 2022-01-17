@@ -1,10 +1,13 @@
-export class StaticPagesController {
+import { ApplicationController } from "./applicationController.js";
+
+
+export class StaticPagesController extends ApplicationController{
 
   static index(res) {
-    res.render("static_pages/index", { main_title: "Node Express server", user: res.locals.currentUser ? res.locals.currentUser.username : "Log in" });
+    this.renderView(null, res, "static_pages/index", { main_title: "Node Express server"});
   }
   
   static about(res) {
-    res.render("static_pages/about", { main_title: "About us" });
+    this.renderView(null, res, "static_pages/about", { main_title: "About us"});
   }
 }

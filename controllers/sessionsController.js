@@ -28,4 +28,12 @@ export class SessionsController{
         })
 
     }
+
+    static deleteSession(req, res){
+        if (req.session && req.session.user && req.session.user._id){
+            req.session.user = null;
+            res.locals.currentUser = null;
+        }
+        res.redirect("users");
+    }
 }

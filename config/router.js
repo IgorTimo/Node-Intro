@@ -7,56 +7,58 @@ import { requireAuth, tryAuth } from "../config/auth.js";
 
 export const router = express.Router();
 
-router.get("/",tryAuth, (_req, res) => {
+router.get("/", tryAuth, (_req, res) => {
   StaticPagesController.index(res);
 });
 
-router.get("/about", (_req, res) => {
+router.get("/about", tryAuth, (_req, res) => {
   StaticPagesController.about(res);
 });
 
-router.get("/comments", requireAuth, (_req, res) => {
+router.get("/comments", tryAuth, (_req, res) => {
   CommentsController.showAllComments(res);
 });
 
-router.get("/comment/:commentId/:commetTitle", (req, res) => {
+router.get("/comment/:commentId/:commetTitle", requireAuth, (req, res) => {
   CommentsController.showComment(req, res);
 });
 
-router.put("/comment/:commentId", (req, res) => {
+router.put("/comment/:commentId", requireAuth, (req, res) => {
   CommentsController.updateComment(req, res);
 });
 
-router.delete("/comments/:commentId", (req, res) => {
+router.delete("/comments/:commentId", requireAuth, (req, res) => {
   CommentsController.deleteComment(req, res);
 });
 
-router.post("/comments", (req, res) => {
+router.post("/comments", requireAuth, (req, res) => {
   CommentsController.addComment(req, res);
 });
 
-router.get("/users", (req, res) => {
-  UsersController.showAllUsers(res);
+router.get("/users", tryAuth, (req, res) => {
+  UsersController.showAllUsers(req, res);
 });
 
-router.get("/user/:user_id", (req, res) => {
-  UsersController.showUser(res);
+router.get("/user/:userId/:userName", tryAuth, (req, res) => {
+  UsersController.showUser(req, res);
 });
 
-router.get("/sessions/new", (req, res) => {
+router.get("/sessions/new", tryAuth, (req, res) => {
   SessionsController.createNewSession(req, res);
 });
 
 router.post("/sessions", (req, res) => {
-  console.log(">>>>>>>>>>>>>>>>>> request: " + req.body);
-
   SessionsController.createSession(req, res);
 });
 
-router.get("/users/new", (req, res) => {
+router.delete("/sessions", requireAuth, (req, res) => {
+  SessionsController.deleteSession(req, res);
+});
+
+router.get("/users/new", requireAuth, (req, res) => {
   UsersController.addNewUser(res);
 });
 
-router.post("/users", (req, res) => {
+router.post("/users", requireAuth, (req, res) => {
   UsersController.createUser(req, res);
 });

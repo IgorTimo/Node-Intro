@@ -1,12 +1,11 @@
 import { Comment } from "../model/comment.js";
+import { ApplicationController } from "./applicationController.js";
 
-
-export class CommentsController {
-  
+export class CommentsController extends ApplicationController {
   static showAllComments(res) {
     Comment.find()
       .then((comments) => {
-        res.render("comments/index", {
+        this.renderView(null, res, "comments/index", {
           main_title: "Comments",
           comments: comments,
         });
@@ -16,21 +15,20 @@ export class CommentsController {
       });
   }
 
-
-  static showComment(req, res){
+  static showComment(req, res) {
     Comment.findOne({ _id: req.params.commentId })
-    .then((comment) => {
-      res.render("comments/show", {
-        main_title: comment.title,
-        comment: comment,
+      .then((comment) => {
+        this.renderView(null, res, "comments/show", {
+          main_title: comment.title,
+          comment: comment,
+        });
+      })
+      .catch((err) => {
+        es.status(400).json({ e: err });
       });
-    })
-    .catch((err) => {
-      es.status(400).json({ e: err });
-    });
   }
 
-  static updateComment(req, res){
+  static updateComment(req, res) {
     const comment = new Comment({
       _id: req.params.commentId,
       title: req.body["comment_title"],
@@ -45,17 +43,17 @@ export class CommentsController {
       });
   }
 
-  static deleteComment(req, res){
+  static deleteComment(req, res) {
     Comment.deleteOne({ _id: req.params.commentId })
-    .then(() => {
-      res.redirect("/comments");
-    })
-    .catch((err) => {
-      es.status(400).json({ e: err });
-    });
+      .then(() => {
+        res.redirect("/comments");
+      })
+      .catch((err) => {
+        es.status(400).json({ e: err });
+      });
   }
 
-  static addComment(req, res){
+  static addComment(req, res) {
     const comment = new Comment({
       title: req.body["comment_title"],
       body: req.body["comment_body"],

@@ -1,5 +1,12 @@
 <header>
-  <h3>{{user}}</h3>
+  {{#if authUser}}
+    <h3>{{authUser}}</h3>
+    <form  method="post" action="sessions?_method=DELETE">
+      <input type="submit" value="log out"/>
+    </form>
+  {{else}}
+   <a href="/sessions/new">log in</a>
+  {{/if}}
   <h1>{{main_title}}</h1>
   <nav>
     <uL>
