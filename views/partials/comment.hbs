@@ -3,6 +3,8 @@
   <small>{{comment.date}}</small>
   <br />
   <strong>{{comment.body}}</strong>
+  <br />
+  Added by: {{comment.user.username}}
 </p>
 
 <form method="post" action="/comments/{{comment._id}}?_method=DELETE">

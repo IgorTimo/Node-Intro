@@ -8,19 +8,15 @@ export class SessionsController{
     }
 
     static createSession(req, res){
-        console.log(">>>>>>>>>>>>>>>>>> request: " +  JSON.stringify(req.body));
         User.findOne({email: req.body.email}).then(user => {
             if(!user){
-                console.log("no such user");
                 res.redirect("sessions/new");
                 return;
             }
             bcrypt.compare(req.body.password, user.password).then(valid => {
                 if(!valid){
-                console.log("wrong password");
                     res.redirect("sessions/new");
                 }else{
-                    console.log("Log in   " + user.username);
                     req.session.user = user;
                     res.redirect("users");
                 }

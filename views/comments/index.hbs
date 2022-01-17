@@ -2,6 +2,7 @@
 {{> comment comment =.}}
 {{/each}}
 
+{{#if authUser}}
 <form method="post" action="/comments">
   <div>
     <label for="comment_title">Title</label>
@@ -15,3 +16,4 @@
     <input type="submit" value="Add" />
   </div>
 </form>
+{{/if}}

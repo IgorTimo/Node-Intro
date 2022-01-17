@@ -4,6 +4,7 @@ import { ApplicationController } from "./applicationController.js";
 export class CommentsController extends ApplicationController {
   static showAllComments(res) {
     Comment.find()
+      .populate("user")
       .then((comments) => {
         this.renderView(null, res, "comments/index", {
           main_title: "Comments",
@@ -17,6 +18,7 @@ export class CommentsController extends ApplicationController {
 
   static showComment(req, res) {
     Comment.findOne({ _id: req.params.commentId })
+      .populate("user")
       .then((comment) => {
         this.renderView(null, res, "comments/show", {
           main_title: comment.title,
@@ -24,7 +26,7 @@ export class CommentsController extends ApplicationController {
         });
       })
       .catch((err) => {
-        es.status(400).json({ e: err });
+        res.status(400).json({ e: err });
       });
   }
 
@@ -39,17 +41,21 @@ export class CommentsController extends ApplicationController {
         res.redirect("/comments");
       })
       .catch((err) => {
-        es.status(400).json({ e: err });
+        res.status(400).json({ e: err });
       });
   }
 
   static deleteComment(req, res) {
-    Comment.deleteOne({ _id: req.params.commentId })
-      .then(() => {
+    Comment.findOne({ _id: req.params.commentId })
+      .then((comment) => {
+        if (comment.user.toString() === res.locals.currentUser._id.toString()) {
+          comment.delete();
+        }
         res.redirect("/comments");
       })
       .catch((err) => {
-        es.status(400).json({ e: err });
+        // res.status(400).json({ e: err });
+        console.log("Error >>>>>>>>>>>" + err);
       });
   }
 
@@ -58,6 +64,7 @@ export class CommentsController extends ApplicationController {
       title: req.body["comment_title"],
       body: req.body["comment_body"],
       date: new Date(),
+      user: res.locals.currentUser._id,
     });
     comment
       .save()

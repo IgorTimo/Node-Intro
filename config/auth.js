@@ -8,6 +8,13 @@ export function tryAuth(req, res, next) {
   auth(req, res, next, false);
 }
 
+export function requireNoAuth(req, res, next) {
+  if (req.session.user && req.session.user._id){
+    res.redirect("/");
+  }
+  next();
+}
+
 function auth(req, res, next, mandatory = true) {
   if (req.session.user && req.session.user._id) {
     User.findOne({ _id: req.session.user._id })

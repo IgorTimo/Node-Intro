@@ -1,9 +1,11 @@
 import express from "express";
+import { check, body } from "express-validator";
+import { User } from "../model/user.js";
 import { CommentsController } from "../controllers/commentsController.js";
 import { SessionsController } from "../controllers/sessionsController.js";
 import { StaticPagesController } from "../controllers/staticPagesController.js";
 import { UsersController } from "../controllers/usersController.js";
-import { requireAuth, tryAuth } from "../config/auth.js";
+import { requireAuth, tryAuth, requireNoAuth } from "../config/auth.js";
 
 export const router = express.Router();
 
@@ -43,11 +45,11 @@ router.get("/user/:userId/:userName", tryAuth, (req, res) => {
   UsersController.showUser(req, res);
 });
 
-router.get("/sessions/new", tryAuth, (req, res) => {
+router.get("/sessions/new", requireNoAuth, (req, res) => {
   SessionsController.createNewSession(req, res);
 });
 
-router.post("/sessions", (req, res) => {
+router.post("/sessions", requireNoAuth, (req, res) => {
   SessionsController.createSession(req, res);
 });
 
@@ -55,10 +57,22 @@ router.delete("/sessions", requireAuth, (req, res) => {
   SessionsController.deleteSession(req, res);
 });
 
-router.get("/users/new", requireAuth, (req, res) => {
-  UsersController.addNewUser(res);
+router.get("/users/new", tryAuth, (req, res) => {
+  UsersController.addNewUser(req,res);
 });
 
-router.post("/users", requireAuth, (req, res) => {
-  UsersController.createUser(req, res);
-});
+router.post(
+  "/users",
+  tryAuth,
+  check("email").isEmail().withMessage("Email is invalid"),
+  body("username").custom(value => {
+    return User.findOne({username: value}).then(user => {
+      if(user){
+        return Promise.reject("Username are not avalible")
+      }
+    })
+  }),
+  (req, res) => {
+    UsersController.createUser(req, res);
+  }
+);
